@@ -3,10 +3,17 @@ module EDUPoint {
         name: string
         calculatedScoreString: string
         calculatedScoreRaw: string
-        assignments: EDUPoint.Assignment[]
+        gradeCalculation: AssignmentGradeCalc[]
+        assignments: Assignment[]
     
         constructor(data: Element) {
+            this.gradeCalculation = []
             this.assignments = []
+
+            const gradeCalculationChildren = [...data.getElementsByTagName("AssignmentGradeCalc")]
+            gradeCalculationChildren.forEach(element => {
+                this.gradeCalculation.push(AssignmentGradeCalc.initializeFromElement(element))
+            })
     
             const assignmentChildren = [...data.getElementsByTagName("Assignment")]
             assignmentChildren.forEach(element => {
