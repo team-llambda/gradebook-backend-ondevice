@@ -12,7 +12,7 @@ module EDUPoint {
             for (var index = 0; index <= assignmentElements.length; index++) {
                 const item = assignmentElements.item(index)
                 if (item == null) { continue }
-                this.assignments.push(new Assignment(item))
+                this.assignments.push(Assignment.initializeFromElement(item))
             }
     
             this.name = data.getAttribute("MarkName")
