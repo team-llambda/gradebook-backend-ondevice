@@ -25,21 +25,10 @@ module EDUPoint {
         static initializeFromElement(data: Element): Assignment {
             const type = data.getAttribute("Type")
             const notes = data.getAttribute("Notes")
-            const pointsAttributeValue = data.getAttribute("Points")
-            const scoreStatus = data.getAttribute("Score")
 
-            var actualScore: number
-            var assignedScore: number
+            const parsedScores = parseScore(data.getAttribute("Points"))
 
-            if (scoreStatus != "Not Graded") {
-                const parsedScores = parseScore(pointsAttributeValue)
-                assignedScore = parsedScores[0]
-                actualScore = parsedScores[1]
-            } else {
-                assignedScore = +pointsAttributeValue.substring(0, pointsAttributeValue.indexOf(" "))  // <== Takes the first number, which is delimited by a space.
-            }
-
-            var assignment = new Assignment(false, type, actualScore, assignedScore, notes)
+            var assignment = new Assignment(false, type, parsedScores[0], parsedScores[1], notes)
             assignment.gradebookID = data.getAttribute("GradebookID")
             assignment.measure = data.getAttribute("Measure")
             assignment.date = dateFromAmericanShortFormat(data.getAttribute("Date"))
@@ -53,6 +42,8 @@ module EDUPoint {
          */
         get scorePercentage(): number | null {
             if (this.actualScore == null) { return null }
+            if (this.assignedScore == 0) { return this.actualScore }    // Extra credit.
+
             return this.actualScore / this.assignedScore
         }
     }
@@ -61,16 +52,22 @@ module EDUPoint {
 /**
  * @param scoreString: The string to parse. Can be null/empty.
  * 
- * @returns: First number is `assignedScore`. Second number is `actualScore`. Returns `null` if invalid parameter was given.
+ * @returns: First number is `assignedScore`. Second number is `actualScore?`. Returns `null` if invalid parameter was given.
  */
-function parseScore(scoreString: string): [number, number] | null {
+function parseScore(scoreString: string): [number | null, number] | null {
     if (scoreString == null || scoreString.length <= 0) { return null }
 
     const delimiterIndex = scoreString.indexOf("/")
-    const lhs = +scoreString.substring(0, delimiterIndex - 1)                           // minus one for the leading space.
-    const rhs = +scoreString.substring(delimiterIndex + 1, scoreString.length - 1)    // plus one for the trailing space.
 
-    return [lhs, rhs]
+    // Ungraded assignment only return an assigned score.
+    if (delimiterIndex <= -1) {
+        return [+scoreString.substring(0, scoreString.indexOf(" ")), null]
+    }
+
+    const assigned = +scoreString.substring(delimiterIndex + 1, scoreString.length - 1)    // plus one for the trailing space.
+    const actual = +scoreString.substring(0, delimiterIndex - 1)                           // minus one for the leading space.
+
+    return [assigned, actual]
 }
 
 /**
