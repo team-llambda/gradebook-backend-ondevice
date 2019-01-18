@@ -6,19 +6,15 @@ module EDUPoint {
         constructor(data: Document) {
             console.log(data)
             this.reportingPeriods = []
-            const allReportingPeriods = data.getElementsByTagName("ReportingPeriods")
+            const allReportingPeriods = [...data.getElementsByTagName("ReportingPeriods")]
 
-            for (var index = 0; index <= allReportingPeriods.length; index++) {
-                const individualReportPeriod = allReportingPeriods.item(index).getElementsByClassName("ReportingPeriod")
+            allReportingPeriods.forEach(items => {
+                const individualReportPeriods = [...items.children]
+                individualReportPeriods.forEach(reportPeriod => {
+                    this.reportingPeriods.push(new ReportingPeriod(reportPeriod))
+                })
+            })
 
-                for (var index = 0; index <= individualReportPeriod.length; index++) {
-                    const item = individualReportPeriod.item(index)
-                    if (item == null) { continue }
-
-                    this.reportingPeriods.push(new ReportingPeriod(item))
-                }
-            }
-    
             this.courses = []
             const coursesElements = data.getElementsByTagName("Course")
             for (var index = 0; index <= coursesElements.length; index++) {

@@ -8,12 +8,10 @@ module EDUPoint {
         constructor(data: Element) {
             this.assignments = []
     
-            const assignmentElements = data.getElementsByTagName("Assignment")
-            for (var index = 0; index <= assignmentElements.length; index++) {
-                const item = assignmentElements.item(index)
-                if (item == null) { continue }
-                this.assignments.push(Assignment.initializeFromElement(item))
-            }
+            const assignmentChildren = [...data.getElementsByTagName("Assignment")]
+            assignmentChildren.forEach(element => {
+                this.assignments.push(Assignment.initializeFromElement(element))
+            })
     
             this.name = data.getAttribute("MarkName")
             this.calculatedScoreString = data.getAttribute("CalculatedScoreString")
