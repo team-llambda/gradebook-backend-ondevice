@@ -10,7 +10,7 @@ module EDUPoint {
          */
         constructor(type: string, weight: number) {
             if (weight > 1.0) {
-                throw ("Weight must be less than or equal to 100% (`1.0`).")
+                throw "Weight must be less than or equal to 100% (`1.0`)."
             }
 
             this.type = type
