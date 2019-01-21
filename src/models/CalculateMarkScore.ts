@@ -15,6 +15,7 @@ class CalculateMarkScore {
      * @returns: The weighted score of this category as a percentage (in decimal form).
      */
     get weightedScore(): number {
-        return (this.weight * this.actualScore) / this.assignedScore
+        if (this.actualScore == 0 || this.assignedScore == 0) { return 0 }
+        return (this.actualScore / this.assignedScore) * this.weight
     }
 }
