@@ -1,6 +1,7 @@
 {
     "compilerOptions": {
         "target": "es6",
-        "outFile": "build/main.js"
+        "outFile": "build/app.js",
+        "sourceMap": true
     }
 }

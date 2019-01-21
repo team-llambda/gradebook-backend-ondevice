@@ -10,12 +10,11 @@ module EDUPoint {
     
         constructor(data: Element) {
             this.marks = []
-            const markElements = data.getElementsByTagName("Mark")
-            for (var index = 0; index <= markElements.length; index++) {
-                const item = markElements.item(index)
-                if (item == null) { continue }
-                this.marks.push(new Mark(item))
-            }
+
+            const markChildren = [...data.getElementsByTagName("Mark")]
+            markChildren.forEach(child => {
+                this.marks.push(new Mark(child))
+            })
     
             this.staffGU = data.getAttribute("StaffGU")
             this.period = data.getAttribute("Period")
