@@ -1,0 +1,20 @@
+{
+  "name": "edupoint-pxpwebservices-synergy",
+  "version": "0.1",
+  "description": "",
+  "main": "build/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/team-llambda/gradebook-backend-ondevice.git"
+  },
+  "author": "Team LLambda",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/team-llambda/gradebook-backend-ondevice/issues"
+  },
+  "homepage": "https://github.com/team-llambda/gradebook-backend-ondevice#readme"
+}
