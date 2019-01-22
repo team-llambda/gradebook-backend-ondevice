@@ -365,3 +365,5 @@ var EDUPoint;
     EDUPoint.ReportingPeriod = ReportingPeriod;
 })(EDUPoint || (EDUPoint = {}));
 //# sourceMappingURL=app.js.map
+
+module.exports = { EDUPoint, PXPWebServicesFunction }
