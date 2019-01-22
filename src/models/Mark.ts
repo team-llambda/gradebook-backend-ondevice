@@ -1,5 +1,16 @@
 module EDUPoint {
     export class Mark {
+        static schema = {
+            name: "Mark",
+            properties: {
+                name: "string",
+                calculatedScoreString: "string",
+                calculatedScoreRaw: "string",
+                gradeCalculation: "AssignmentGradeCalc[]",
+                assignments: "Assignment[]"                
+            }
+        }
+
         name: string
         calculatedScoreString: string
         calculatedScoreRaw: string

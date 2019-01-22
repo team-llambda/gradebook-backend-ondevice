@@ -1,5 +1,13 @@
 module EDUPoint {
     export class AssignmentGradeCalc {
+        static schema = {
+            name: "AssignmentGradeCalc",
+            properties: {
+                type: "string",
+                weight: "number"               
+            }
+        }
+        
         type: string
         weight: number
 

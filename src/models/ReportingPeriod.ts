@@ -1,5 +1,15 @@
 module EDUPoint {
     export class ReportingPeriod {
+        static schema = {
+            name: "ReportingPeriod",
+            properties: {
+                index: "number",
+                gradePeriod: "string",
+                startDate: "date",
+                endDate: "date"
+            }
+        }
+
         index: number
         gradePeriod: string
         startDate: Date

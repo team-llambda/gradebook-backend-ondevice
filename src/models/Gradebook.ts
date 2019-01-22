@@ -1,5 +1,13 @@
 module EDUPoint {
     export class Gradebook {
+        static schema = {
+            name: "Gradebook",
+            properties: {
+                reportingPeriods: "ReportingPeriod[]",
+                courses: "Course[]"
+            }
+        }
+        
         reportingPeriods: ReportingPeriod[]
         courses: Course[]
     
