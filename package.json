@@ -1,20 +1,27 @@
 {
-  "name": "edupoint-pxpwebservices-synergy",
-  "version": "0.1",
-  "description": "",
-  "main": "build/app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/team-llambda/gradebook-backend-ondevice.git"
-  },
-  "author": "Team LLambda",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/team-llambda/gradebook-backend-ondevice/issues"
-  },
-  "homepage": "https://github.com/team-llambda/gradebook-backend-ondevice#readme"
+	"name": "@team-llambda/edupoint-pxpwebservices-synergy",
+	"version": "0.1",
+	"description": "An NPM package for accessing the Edupoint Synergy API on behalf of students, parents, and teachers.",
+	"main": "build/app.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"build": "tsc"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/team-llambda/gradebook-backend-ondevice.git"
+	},
+	"author": "team llambda",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/team-llambda/gradebook-backend-ondevice/issues"
+	},
+	"homepage": "https://github.com/team-llambda/gradebook-backend-ondevice#readme",
+	"keywords": [
+		"gradebook",
+		"edupoint",
+		"synergy",
+		"bsd405",
+		"llambda"
+	]
 }
