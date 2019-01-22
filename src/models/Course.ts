@@ -1,5 +1,18 @@
 module EDUPoint {
     export class Course {
+        static schema = {
+            name: "Course",
+            properties: {
+                staffGU: "string",
+                period: "string",
+                title: "string",
+                room: "string",
+                staff: "string",
+                staffEmail: "string",
+                marks: "Mark[]"
+            }
+        }
+        
         staffGU: string
         period: string
         title: string

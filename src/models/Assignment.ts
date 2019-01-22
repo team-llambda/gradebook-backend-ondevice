@@ -1,5 +1,16 @@
 module EDUPoint {
     export class Assignment {
+        static schema = {
+            name: "Assignemnt",
+            properties: {
+                gradebookID: "string?",
+                measure: "string?",
+                type: "string",
+                date: "date?",
+                dueDate: "date?"
+            }
+        }
+
         gradebookID?: string
         measure?: string
         type: string
