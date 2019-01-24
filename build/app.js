@@ -1,13 +1,18 @@
-var PXPWebServicesFunction;
-(function (PXPWebServicesFunction) {
-    PXPWebServicesFunction[PXPWebServicesFunction["Gradebook"] = 0] = "Gradebook";
-})(PXPWebServicesFunction || (PXPWebServicesFunction = {}));
-function PXPWebServicesFunctionParameters(serviceFunction) {
-    switch (serviceFunction) {
-        case PXPWebServicesFunction.Gradebook:
-            return "<Parms><ChildIntID>0</ChildIntID></Parms>";
+var EDUPoint;
+(function (EDUPoint) {
+    let WebServiceFunction;
+    (function (WebServiceFunction) {
+        WebServiceFunction[WebServiceFunction["Gradebook"] = 0] = "Gradebook";
+        WebServiceFunction[WebServiceFunction["ChildList"] = 1] = "ChildList";
+    })(WebServiceFunction = EDUPoint.WebServiceFunction || (EDUPoint.WebServiceFunction = {}));
+    function WebServiceFunctionParameter(serviceFunction) {
+        switch (serviceFunction) {
+            case WebServiceFunction.Gradebook: return "<Parms><ChildIntID>0</ChildIntID></Parms>";
+            case WebServiceFunction.ChildList: return "";
+        }
     }
-}
+    EDUPoint.WebServiceFunctionParameter = WebServiceFunctionParameter;
+})(EDUPoint || (EDUPoint = {}));
 var EDUPoint;
 (function (EDUPoint) {
     class PXPWebServices {
@@ -25,8 +30,8 @@ var EDUPoint;
                 skipLoginLog: "false",
                 parent: "false",
                 webServiceHandleName: 'PXPWebServices',
-                methodName: PXPWebServicesFunction[functionToRun],
-                paramStr: PXPWebServicesFunctionParameters(functionToRun)
+                methodName: EDUPoint.WebServiceFunction[functionToRun],
+                paramStr: EDUPoint.WebServiceFunctionParameter(functionToRun)
             };
             return new Promise((resolve, reject) => {
                 this.post(fullURL, requestParameters).then(document => {
@@ -65,8 +70,21 @@ var EDUPoint;
         }
         getGradebook() {
             return new Promise((resolve, reject) => {
-                this.processWebRequest(PXPWebServicesFunction.Gradebook).then(xml => {
+                this.processWebRequest(EDUPoint.WebServiceFunction.Gradebook).then(xml => {
                     resolve(new EDUPoint.Gradebook(xml));
+                }).catch(error => {
+                    reject(error);
+                });
+            });
+        }
+        getChildList() {
+            return new Promise((resolve, reject) => {
+                this.processWebRequest(EDUPoint.WebServiceFunction.ChildList).then(xml => {
+                    const childElement = xml.getElementsByTagName("Child");
+                    if (childElement.length <= 0) {
+                        reject(new Error("An unknown error occurred."));
+                    }
+                    resolve(new EDUPoint.Child(childElement[0]));
                 }).catch(error => {
                     reject(error);
                 });
@@ -213,6 +231,18 @@ class CalculateMarkScore {
         return (this.actualScore / this.assignedScore) * this.weight;
     }
 }
+var EDUPoint;
+(function (EDUPoint) {
+    class Child {
+        constructor(data) {
+            this.studentGU = data.getAttribute("StudentGU");
+            this.childName = data.getElementsByTagName("ChildName")[0].childNodes[0].nodeValue;
+            this.organizationName = data.getElementsByTagName("OrganizationName")[0].childNodes[0].nodeValue;
+            this.grade = data.getElementsByTagName("Grade")[0].childNodes[0].nodeValue;
+        }
+    }
+    EDUPoint.Child = Child;
+})(EDUPoint || (EDUPoint = {}));
 var EDUPoint;
 (function (EDUPoint) {
     class Course {
@@ -366,4 +396,4 @@ var EDUPoint;
 })(EDUPoint || (EDUPoint = {}));
 //# sourceMappingURL=app.js.map
 
-module.exports = { EDUPoint, PXPWebServicesFunction }
+module.exports = { EDUPoint }
