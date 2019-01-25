@@ -11,7 +11,7 @@ module EDUPoint {
             this.edupointBaseURL = edupointBaseURL
         }
     
-        processWebRequest(functionToRun: PXPWebServicesFunction): Promise<XMLDocument> {
+        processWebRequest(functionToRun: WebServiceFunction): Promise<XMLDocument> {
             const fullURL = this.edupointBaseURL + this.basePath
     
             const requestParameters: {[key: string]: string} = {
@@ -20,8 +20,8 @@ module EDUPoint {
                 skipLoginLog: "false",
                 parent: "false",
                 webServiceHandleName: 'PXPWebServices',
-                methodName: PXPWebServicesFunction[functionToRun],
-                paramStr: PXPWebServicesFunctionParameters(functionToRun)
+                methodName: WebServiceFunction[functionToRun],
+                paramStr: WebServiceFunctionParameter(functionToRun)
             }
     
             return new Promise<Document>((resolve, reject) => {
@@ -65,8 +65,22 @@ module EDUPoint {
     
         getGradebook(): Promise<Gradebook> {
             return new Promise((resolve, reject) => {
-                this.processWebRequest(PXPWebServicesFunction.Gradebook).then(xml => {
+                this.processWebRequest(WebServiceFunction.Gradebook).then(xml => {
                     resolve(new Gradebook(xml))
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        }
+
+        getChildList(): Promise<Child> {
+            return new Promise((resolve, reject) => {
+                this.processWebRequest(WebServiceFunction.ChildList).then(xml => {
+                    const childElement = xml.getElementsByTagName("Child")
+                    if (childElement.length <= 0) {
+                        reject(new Error("An unknown error occurred."))
+                    }
+                    resolve(new Child(childElement[0]))
                 }).catch(error => {
                     reject(error)
                 })
