@@ -11,7 +11,7 @@ module EDUPoint {
             this.edupointBaseURL = edupointBaseURL
         }
     
-        processWebRequest(functionToRun: WebServiceFunction): Promise<XMLDocument> {
+        processWebRequest(functionToRun: WebServiceFunction, parameters?: string): Promise<XMLDocument> {
             const fullURL = this.edupointBaseURL + this.basePath
     
             const requestParameters: {[key: string]: string} = {
@@ -21,7 +21,7 @@ module EDUPoint {
                 parent: "false",
                 webServiceHandleName: 'PXPWebServices',
                 methodName: WebServiceFunction[functionToRun],
-                paramStr: WebServiceFunctionParameter(functionToRun)
+                paramStr: parameters || ""
             }
     
             return new Promise<Document>((resolve, reject) => {
@@ -63,9 +63,16 @@ module EDUPoint {
             })
         }
     
-        getGradebook(): Promise<Gradebook> {
+        getGradebook(reportingPeriodIndex?: number): Promise<Gradebook> {
+            var parameter: string
+            if (reportingPeriodIndex != null) {
+                parameter = "<Parms><ChildIntID>0</ChildIntID><ReportPeriod>" + reportingPeriodIndex + "</ReportPeriod></Parms>"
+            } else {
+                parameter = "<Parms><ChildIntID>0</ChildIntID></Parms>"
+            }
+
             return new Promise((resolve, reject) => {
-                this.processWebRequest(WebServiceFunction.Gradebook).then(xml => {
+                this.processWebRequest(WebServiceFunction.Gradebook, parameter).then(xml => {
                     resolve(new Gradebook(xml))
                 }).catch(error => {
                     reject(error)
