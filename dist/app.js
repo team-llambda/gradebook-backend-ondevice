@@ -258,14 +258,14 @@ var EDUPoint;
             this.notes = notes;
         }
         Assignment.initializeFromElement = function (data) {
-            var type = data.getAttribute("Type");
-            var notes = data.getAttribute("Notes");
-            var parsedScores = parseScore(data.getAttribute("Points"));
+            var type = data.attributes["Type"];
+            var notes = data.attributes["Notes"];
+            var parsedScores = parseScore(data.attributes["Points"]);
             var assignment = new Assignment(false, type, parsedScores[0], parsedScores[1], notes);
-            assignment.gradebookID = data.getAttribute("GradebookID");
-            assignment.measure = data.getAttribute("Measure");
-            assignment.date = dateFromAmericanShortFormat(data.getAttribute("Date"));
-            assignment.dueDate = dateFromAmericanShortFormat(data.getAttribute("DueDate"));
+            assignment.gradebookID = data.attributes["GradebookID"];
+            assignment.measure = data.attributes["Measure"];
+            assignment.date = dateFromAmericanShortFormat(data.attributes["Date"]);
+            assignment.dueDate = dateFromAmericanShortFormat(data.attributes["DueDate"]);
             return assignment;
         };
         Object.defineProperty(Assignment.prototype, "scorePercentage", {
@@ -336,8 +336,8 @@ var EDUPoint;
             this.weight = weight;
         }
         AssignmentGradeCalc.initializeFromElement = function (data) {
-            var typeValue = data.getAttribute("Type");
-            var weightValueAsPercentage = data.getAttribute("Weight");
+            var typeValue = data.attributes["Type"];
+            var weightValueAsPercentage = data.attributes["Weight"];
             var weightValueAsDecimal = +weightValueAsPercentage.substring(0, weightValueAsPercentage.indexOf("%")) / 100;
             return new AssignmentGradeCalc(typeValue, weightValueAsDecimal);
         };
@@ -384,9 +384,6 @@ var EDUPoint;
             this.childName = data.getElementsByTagName("ChildName")[0].value;
             this.organizationName = data.getElementsByTagName("OrganizationName")[0].value;
             this.grade = data.getElementsByTagName("Grade")[0].value;
-            // this.childName = data.getElementsByTagName("ChildName")[0].childNodes[0].nodeValue
-            // this.organizationName = data.getElementsByTagName("OrganizationName")[0].childNodes[0].nodeValue
-            // this.grade = data.getElementsByTagName("Grade")[0].childNodes[0].nodeValue
         }
         return Child;
     }());
@@ -395,19 +392,22 @@ var EDUPoint;
 //# sourceMappingURL=Child.js.map
 var EDUPoint;
 (function (EDUPoint) {
-    var Course = /** @class */ (function () {
+    var Course = (function () {
         function Course(data) {
             this.marks = [];
             var markChildren = data.getElementsByTagName("Mark");
             for (var i = 0; i <= markChildren.length; i++) {
-                this.marks.push(new EDUPoint.Mark(markChildren.item(i)));
+                var mark = markChildren[i];
+                if (mark == undefined)
+                    continue;
+                this.marks.push(new EDUPoint.Mark(mark));
             }
-            this.staffGU = data.getAttribute("StaffGU");
-            this.period = data.getAttribute("Period");
-            this.title = data.getAttribute("Title");
-            this.room = data.getAttribute("Room");
-            this.staff = data.getAttribute("Staff");
-            this.staffEmail = data.getAttribute("StaffEMail");
+            this.staffGU = data.attributes["StaffGU"];
+            this.period = data.attributes["Period"];
+            this.title = data.attributes["Title"];
+            this.room = data.attributes["Room"];
+            this.staff = data.attributes["Staff"];
+            this.staffEmail = data.attributes["StaffEmail"];
         }
         Course.schema = {
             name: "Course",
@@ -432,21 +432,26 @@ var EDUPoint;
         function Gradebook(data) {
             console.log(data);
             this.reportingPeriods = [];
-            var parsedData = new XMLParser().parseFromString(data);
-            var allReportingPeriods = parsedData.getElementsByTagName("ReportingPeriods");
+            // const parsedData = new XMLParser().parseFromString(data)
+            var allReportingPeriods = data.getElementsByTagName("ReportingPeriods");
             for (var reportPeriodIndex = 0; reportPeriodIndex <= allReportingPeriods.length; reportPeriodIndex++) {
-                var individualReportPeriods = allReportingPeriods.item(reportPeriodIndex).children;
+                var reportingPeriods = allReportingPeriods[reportPeriodIndex];
+                if (reportingPeriods == undefined)
+                    continue;
+                var individualReportPeriods = reportingPeriods.children;
                 for (var individualIndex = 0; individualIndex <= individualReportPeriods.length; individualIndex++) {
-                    this.reportingPeriods.push(new EDUPoint.ReportingPeriod(individualReportPeriods.item(individualIndex)));
+                    var period = individualReportPeriods[individualIndex];
+                    if (period == undefined)
+                        continue;
+                    this.reportingPeriods.push(new EDUPoint.ReportingPeriod(period));
                 }
             }
             this.courses = [];
-            var coursesElements = parsedData.getElementsByTagName("Course");
+            var coursesElements = data.getElementsByTagName("Course");
             for (var index = 0; index <= coursesElements.length; index++) {
-                var item = coursesElements.item(index);
-                if (item == null) {
+                var item = coursesElements[index];
+                if (item == undefined)
                     continue;
-                }
                 this.courses.push(new EDUPoint.Course(item));
             }
         }
@@ -470,17 +475,23 @@ var EDUPoint;
             this.assignments = [];
             var gradeCalculationChildren = data.getElementsByTagName("AssignmentGradeCalc");
             for (var i = 0; i <= gradeCalculationChildren.length; i++) {
-                var gradeCalc = EDUPoint.AssignmentGradeCalc.initializeFromElement(gradeCalculationChildren.item(i));
+                var gradeCalculation = gradeCalculationChildren[i];
+                if (gradeCalculation == undefined)
+                    continue;
+                var gradeCalc = EDUPoint.AssignmentGradeCalc.initializeFromElement(gradeCalculation);
                 if (gradeCalc.type != "TOTAL")
                     this.gradeCalculation.push(gradeCalc);
             }
             var assignmentChildren = data.getElementsByTagName("Assignment");
             for (var i = 0; i <= assignmentChildren.length; i++) {
-                this.assignments.push(EDUPoint.Assignment.initializeFromElement(assignmentChildren.item(i)));
+                var assignment = assignmentChildren[i];
+                if (assignment == undefined)
+                    continue;
+                this.assignments.push(EDUPoint.Assignment.initializeFromElement(assignment));
             }
-            this.name = data.getAttribute("MarkName");
-            this.calculatedScoreString = data.getAttribute("CalculatedScoreString");
-            this.calculatedScoreRaw = data.getAttribute("CalculatedScoreRaw");
+            this.name = data.attributes["MarkName"];
+            this.calculatedScoreString = data.attributes["CalculatedScoreString"];
+            this.calculatedScoreRaw = data.attributes["CalculatedScoreRaw"];
         }
         Object.defineProperty(Mark.prototype, "calculateScore", {
             /**
@@ -537,10 +548,10 @@ var EDUPoint;
 (function (EDUPoint) {
     var ReportingPeriod = /** @class */ (function () {
         function ReportingPeriod(data) {
-            this.index = +data.getAttribute("Index");
-            this.gradePeriod = data.getAttribute("GradePeriod");
-            this.startDate = dateFromAmericanShortFormat(data.getAttribute("StartDate"));
-            this.endDate = dateFromAmericanShortFormat(data.getAttribute("EndDate"));
+            this.index = +data.attributes["Index"];
+            this.gradePeriod = data.attributes["GradePeriod"];
+            this.startDate = dateFromAmericanShortFormat(data.attributes["StartDate"]);
+            this.endDate = dateFromAmericanShortFormat(data.attributes["EndDate"]);
         }
         ReportingPeriod.schema = {
             name: "ReportingPeriod",
@@ -556,3 +567,5 @@ var EDUPoint;
     EDUPoint.ReportingPeriod = ReportingPeriod;
 })(EDUPoint || (EDUPoint = {}));
 //# sourceMappingURL=ReportingPeriod.js.map
+
+module.exports = EDUPoint

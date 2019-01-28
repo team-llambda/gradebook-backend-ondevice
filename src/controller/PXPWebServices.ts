@@ -29,7 +29,6 @@ module EDUPoint {
                     const body = documentParser.getElementsByTagName("string")[0].value
                     const fixedBody = body.replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
                     const xmlBody = new XMLParser().parseFromString(fixedBody)
-                    // const xmlBody = new DOMParser().parseFromString(body, "text/xml")
     
                     var error = xmlBody.getElementsByTagName("RT_ERROR")[0]
                     if (error != null) {

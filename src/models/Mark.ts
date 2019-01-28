@@ -23,18 +23,24 @@ module EDUPoint {
 
             const gradeCalculationChildren = data.getElementsByTagName("AssignmentGradeCalc")
             for (var i = 0; i <= gradeCalculationChildren.length; i++) {
-                const gradeCalc = AssignmentGradeCalc.initializeFromElement(gradeCalculationChildren.item(i))
+                const gradeCalculation = gradeCalculationChildren[i]
+                if (gradeCalculation == undefined) continue
+
+                const gradeCalc = AssignmentGradeCalc.initializeFromElement(gradeCalculation)
                 if (gradeCalc.type != "TOTAL") this.gradeCalculation.push(gradeCalc)
             }
     
             const assignmentChildren = data.getElementsByTagName("Assignment")
             for (var i = 0; i <= assignmentChildren.length; i++) {
-                this.assignments.push(Assignment.initializeFromElement(assignmentChildren.item(i)))
+                const assignment = assignmentChildren[i]
+                if (assignment == undefined) continue
+
+                this.assignments.push(Assignment.initializeFromElement(assignment))
             }
-            
-            this.name = data.getAttribute("MarkName")
-            this.calculatedScoreString = data.getAttribute("CalculatedScoreString")
-            this.calculatedScoreRaw = data.getAttribute("CalculatedScoreRaw")
+
+            this.name = data.attributes["MarkName"]
+            this.calculatedScoreString = data.attributes["CalculatedScoreString"]
+            this.calculatedScoreRaw = data.attributes["CalculatedScoreRaw"]
         }
 
         /**

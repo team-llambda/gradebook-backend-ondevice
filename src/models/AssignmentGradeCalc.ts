@@ -26,8 +26,8 @@ module EDUPoint {
         }
 
         static initializeFromElement(data: Element): AssignmentGradeCalc {
-            const typeValue = data.getAttribute("Type")
-            const weightValueAsPercentage = data.getAttribute("Weight")
+            const typeValue = data.attributes["Type"]
+            const weightValueAsPercentage = data.attributes["Weight"]
             const weightValueAsDecimal = +weightValueAsPercentage.substring(0, weightValueAsPercentage.indexOf("%")) / 100
 
             return new AssignmentGradeCalc(typeValue, weightValueAsDecimal)
