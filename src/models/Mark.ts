@@ -21,19 +21,17 @@ module EDUPoint {
             this.gradeCalculation = []
             this.assignments = []
 
-            const gradeCalculationChildren = [...data.getElementsByTagName("AssignmentGradeCalc")]
-            gradeCalculationChildren.forEach(element => {
-                const gradeCalc = AssignmentGradeCalc.initializeFromElement(element)
-                if (gradeCalc.type != "TOTAL") {
-                    this.gradeCalculation.push(AssignmentGradeCalc.initializeFromElement(element))
-                }
-            })
+            const gradeCalculationChildren = data.getElementsByTagName("AssignmentGradeCalc")
+            for (var i = 0; i <= gradeCalculationChildren.length; i++) {
+                const gradeCalc = AssignmentGradeCalc.initializeFromElement(gradeCalculationChildren.item(i))
+                if (gradeCalc.type != "TOTAL") this.gradeCalculation.push(gradeCalc)
+            }
     
-            const assignmentChildren = [...data.getElementsByTagName("Assignment")]
-            assignmentChildren.forEach(element => {
-                this.assignments.push(Assignment.initializeFromElement(element))
-            })
-    
+            const assignmentChildren = data.getElementsByTagName("Assignment")
+            for (var i = 0; i <= assignmentChildren.length; i++) {
+                this.assignments.push(Assignment.initializeFromElement(assignmentChildren.item(i)))
+            }
+            
             this.name = data.getAttribute("MarkName")
             this.calculatedScoreString = data.getAttribute("CalculatedScoreString")
             this.calculatedScoreRaw = data.getAttribute("CalculatedScoreRaw")

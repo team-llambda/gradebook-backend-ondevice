@@ -11,7 +11,7 @@ module EDUPoint {
             this.edupointBaseURL = edupointBaseURL
         }
     
-        processWebRequest(functionToRun: WebServiceFunction, parameters?: string): Promise<XMLDocument> {
+        processWebRequest(functionToRun: WebServiceFunction, parameters?: string): Promise<any> {
             const fullURL = this.edupointBaseURL + this.basePath
     
             const requestParameters: {[key: string]: string} = {
@@ -24,14 +24,16 @@ module EDUPoint {
                 paramStr: parameters || ""
             }
     
-            return new Promise<Document>((resolve, reject) => {
-                this.post(fullURL, requestParameters).then(document => {
-                    const body = document.getElementsByTagName("string")[0].childNodes[0].nodeValue
-                    const xmlBody = new DOMParser().parseFromString(body, "text/xml")
+            return new Promise<any>((resolve, reject) => {
+                this.post(fullURL, requestParameters).then(documentParser => {
+                    const body = documentParser.getElementsByTagName("string")[0].value
+                    const fixedBody = body.replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+                    const xmlBody = new XMLParser().parseFromString(fixedBody)
+                    // const xmlBody = new DOMParser().parseFromString(body, "text/xml")
     
                     var error = xmlBody.getElementsByTagName("RT_ERROR")[0]
                     if (error != null) {
-                        reject(Error(error.getAttribute("ERROR_MESSAGE")))
+                        reject(Error(error.attributes["ERROR_MESSAGE"]))
                     } else {
                         resolve(xmlBody)
                     }
@@ -41,17 +43,18 @@ module EDUPoint {
             })
         }    
     
-        post(url: string, parameters: {[key: string]: string}): Promise<Document> {
-            return new Promise<Document>((resolve, reject) => {
+        post(url: string, parameters: {[key: string]: string}): Promise<any> {
+            return new Promise<any>((resolve, reject) => {
                 var request = new XMLHttpRequest()
                 request.open('POST', url, true)
                 request.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8")
                 
                 request.onload = function() {
+                    const response = new XMLParser().parseFromString(request.responseText)
                     if (request.status >= 200 && request.status < 400) {
-                        resolve(request.responseXML)
+                        resolve(response)
                     } else {
-                        reject(request.responseText)
+                        reject(response)
                     }
                 }                
                 
@@ -82,7 +85,7 @@ module EDUPoint {
 
         getChildList(): Promise<Child> {
             return new Promise((resolve, reject) => {
-                this.processWebRequest(WebServiceFunction.ChildList).then(xml => {
+                this.processWebRequest(WebServiceFunction.ChildList).then(xml => {                    
                     const childElement = xml.getElementsByTagName("Child")
                     if (childElement.length <= 0) {
                         reject(new Error("An unknown error occurred."))

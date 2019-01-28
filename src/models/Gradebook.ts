@@ -11,20 +11,22 @@ module EDUPoint {
         reportingPeriods: ReportingPeriod[]
         courses: Course[]
     
-        constructor(data: Document) {
+        constructor(data: string) {
             console.log(data)
             this.reportingPeriods = []
-            const allReportingPeriods = [...data.getElementsByTagName("ReportingPeriods")]
 
-            allReportingPeriods.forEach(items => {
-                const individualReportPeriods = [...items.children]
-                individualReportPeriods.forEach(reportPeriod => {
-                    this.reportingPeriods.push(new ReportingPeriod(reportPeriod))
-                })
-            })
+            const parsedData = new XMLParser().parseFromString(data)
+            const allReportingPeriods = parsedData.getElementsByTagName("ReportingPeriods")
+
+            for (var reportPeriodIndex = 0; reportPeriodIndex <= allReportingPeriods.length; reportPeriodIndex++) {
+                const individualReportPeriods = allReportingPeriods.item(reportPeriodIndex).children
+                for (var individualIndex = 0; individualIndex <= individualReportPeriods.length; individualIndex++) {
+                    this.reportingPeriods.push(new ReportingPeriod(individualReportPeriods.item(individualIndex)))
+                }
+            }
 
             this.courses = []
-            const coursesElements = data.getElementsByTagName("Course")
+            const coursesElements = parsedData.getElementsByTagName("Course")
             for (var index = 0; index <= coursesElements.length; index++) {
                 const item = coursesElements.item(index)
                 if (item == null) { continue }
