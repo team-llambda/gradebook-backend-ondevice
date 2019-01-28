@@ -33,17 +33,17 @@ module EDUPoint {
             this.notes = notes
         }
 
-        static initializeFromElement(data: Element): Assignment {
-            const type = data.getAttribute("Type")
-            const notes = data.getAttribute("Notes")
+        static initializeFromElement(data): Assignment {
+            const type = data.attributes["Type"]
+            const notes = data.attributes["Notes"]
 
-            const parsedScores = parseScore(data.getAttribute("Points"))
+            const parsedScores = parseScore(data.attributes["Points"])
 
             var assignment = new Assignment(false, type, parsedScores[0], parsedScores[1], notes)
-            assignment.gradebookID = data.getAttribute("GradebookID")
-            assignment.measure = data.getAttribute("Measure")
-            assignment.date = dateFromAmericanShortFormat(data.getAttribute("Date"))
-            assignment.dueDate =  dateFromAmericanShortFormat(data.getAttribute("DueDate"))
+            assignment.gradebookID = data.attributes["GradebookID"]
+            assignment.measure = data.attributes["Measure"]
+            assignment.date = dateFromAmericanShortFormat(data.attributes["Date"])
+            assignment.dueDate =  dateFromAmericanShortFormat(data.attributes["DueDate"])
             
             return assignment
         }

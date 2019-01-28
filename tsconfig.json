@@ -1,7 +1,14 @@
 {
     "compilerOptions": {
-        "target": "es6",
-        "outFile": "build/app.js",
-        "sourceMap": true
-    }
+        "lib": ["dom", "es2015.promise", "es5"],
+        "target": "es5",
+        "module": "commonjs",
+        "outDir": "build/",
+        "sourceMap": true,
+        "allowJs": true,
+    },
+    "exclude": [
+        "dist",
+        "build"
+    ]
 }

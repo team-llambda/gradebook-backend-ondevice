@@ -21,22 +21,26 @@ module EDUPoint {
             this.gradeCalculation = []
             this.assignments = []
 
-            const gradeCalculationChildren = [...data.getElementsByTagName("AssignmentGradeCalc")]
-            gradeCalculationChildren.forEach(element => {
-                const gradeCalc = AssignmentGradeCalc.initializeFromElement(element)
-                if (gradeCalc.type != "TOTAL") {
-                    this.gradeCalculation.push(AssignmentGradeCalc.initializeFromElement(element))
-                }
-            })
+            const gradeCalculationChildren = data.getElementsByTagName("AssignmentGradeCalc")
+            for (var i = 0; i <= gradeCalculationChildren.length; i++) {
+                const gradeCalculation = gradeCalculationChildren[i]
+                if (gradeCalculation == undefined) continue
+
+                const gradeCalc = AssignmentGradeCalc.initializeFromElement(gradeCalculation)
+                if (gradeCalc.type != "TOTAL") this.gradeCalculation.push(gradeCalc)
+            }
     
-            const assignmentChildren = [...data.getElementsByTagName("Assignment")]
-            assignmentChildren.forEach(element => {
-                this.assignments.push(Assignment.initializeFromElement(element))
-            })
-    
-            this.name = data.getAttribute("MarkName")
-            this.calculatedScoreString = data.getAttribute("CalculatedScoreString")
-            this.calculatedScoreRaw = data.getAttribute("CalculatedScoreRaw")
+            const assignmentChildren = data.getElementsByTagName("Assignment")
+            for (var i = 0; i <= assignmentChildren.length; i++) {
+                const assignment = assignmentChildren[i]
+                if (assignment == undefined) continue
+
+                this.assignments.push(Assignment.initializeFromElement(assignment))
+            }
+
+            this.name = data.attributes["MarkName"]
+            this.calculatedScoreString = data.attributes["CalculatedScoreString"]
+            this.calculatedScoreRaw = data.attributes["CalculatedScoreRaw"]
         }
 
         /**
